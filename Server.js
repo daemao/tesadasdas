@@ -88,7 +88,7 @@ setInterval(function() {
 
 
 		
-}, 30*1000); // 30 * 1000 milsec
+}, 30*10000); // 30 * 1000 milsec
 	function sendToServer(total_tags){
 		console.log(new Date(),":send data to the server");
 		request.post({
