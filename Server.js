@@ -11,8 +11,9 @@ var Buffer = require('buffer').Buffer;
 //пикабу берет топ посты за предыдущий месяц по категории айти
 const   pikabu_url = "https://pikabu.ru/tag/IT?d=4065&D=4093";
 const   pikabu_url_incr = "https://pikabu.ru/tag/IT?d=4092&D=4093";
-setInterval(function() {
+// setInterval(function() {
     var total_tags = [];
+    var total_tags_short = [];
 	// HABR request
 	request(habr_url, function (error, response, body) {
 	    if (!error) {
@@ -40,7 +41,6 @@ setInterval(function() {
 	         		$$("ul.post__hubs li a").each((i,hub)=>{
 	         			
 	         			let topic = $$(hub).text()
-	         			console.log("aaaaa2",detectCharset(topic));
 	         			if (total_tags.filter(e=>e.name == topic).length == 0){
 	         				total_tags.push({name:topic,value:total});
 	         			}else{
@@ -83,11 +83,10 @@ setInterval(function() {
 	         		$$("ul.post__hubs li a").each((i,hub)=>{
 	         			
 	         			let topic = $$(hub).text()
-	         			console.log("aaaaa2",detectCharset(topic));
-	         			if (total_tags.filter(e=>e.name == topic).length == 0){
-	         				total_tags.push({name:topic,value:total});
+	         			if (total_tags_short.filter(e=>e.name == topic).length == 0){
+	         				total_tags_short.push({name:topic,value:total});
 	         			}else{
-	         				total_tags.forEach(e=>{
+	         				total_tags_short.forEach(e=>{
 	         					if(e.name == topic)e.value = e.value+total;
 	         				})
 	         			} 
@@ -108,12 +107,10 @@ setInterval(function() {
 	         	likes = $$("div.story__rating-count").text()*1;
 	         	$$("a.tags__tag").each((i,hub)=>{
 	         			let  topic =$$(hub).text();
-	         			console.log("c",detectCharset(topic));
 	         			var iconv = new Iconv.Iconv("windows-1251", 'utf-8');
 						x = iconv.convert(topic);
 
 						topic = x.toString();
-						console.log("c2",detectCharset(topic));
 	         			if (total_tags.filter(e=>e.name == topic).length == 0){
 	         				total_tags.push({name:topic,value:likes});
 	         			}else{
@@ -123,7 +120,8 @@ setInterval(function() {
 	         			} 
 	         		})
 
-	        })
+	        });
+	        sendToServer(total_tags);
 	    } else {
 	        console.log("Произошла ошибка: " + error);
 	    }
@@ -137,23 +135,21 @@ setInterval(function() {
 	         	likes = $$("div.story__rating-count").text()*1;
 	         	$$("a.tags__tag").each((i,hub)=>{
 	         			let  topic =$$(hub).text();
-	         			console.log("c",detectCharset(topic));
 	         			var iconv = new Iconv.Iconv("windows-1251", 'utf-8');
 						x = iconv.convert(topic);
 
 						topic = x.toString();
-						console.log("c2",detectCharset(topic));
-	         			if (total_tags.filter(e=>e.name == topic).length == 0){
-	         				total_tags.push({name:topic,value:likes});
+	         			if (total_tags_short.filter(e=>e.name == topic).length == 0){
+	         				total_tags_short.push({name:topic,value:likes});
 	         			}else{
-	         				total_tags.forEach(e=>{
+	         				total_tags_short.forEach(e=>{
 	         					if(e.name == topic)e.value = e.value+likes;
 	         				})
 	         			} 
 	         		})
 
 	        })
-	        sendToServer(total_tags);
+	        sendToServerShort(total_tags_short);
 	    } else {
 	        console.log("Произошла ошибка: " + error);
 	    }
@@ -161,16 +157,23 @@ setInterval(function() {
 
 
 		
-}, 30*10000); // 30 * 1000 milsec
+// }, 30*10000); // 30 * 1000 milsec
 	function sendToServer(total_tags){
-		console.log(new Date(),":send data to the server");
+		console.log(new Date(),":send data to the server1");
 		request.post({
 		  headers: {'content-type' : 'application/json'},
 		  url:     'http://18.216.120.74/trends',
 		  body:    JSON.stringify(total_tags)
 		}, function(error, response, body){
-				console.log("sending2")
-		  		console.log(body);
+		  		console.log(error);
+		});
+	}
+	function sendToServerShort(total_tags){
+		request.post({
+		  headers: {'content-type' : 'application/json'},
+		  url:     'http://18.216.120.74/gaining-trend',
+		  body:    JSON.stringify(total_tags)
+		}, function(error, response, body){
 		  		console.log(error);
 		});
 	}
