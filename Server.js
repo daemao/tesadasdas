@@ -11,7 +11,7 @@ var Buffer = require('buffer').Buffer;
 //пикабу берет топ посты за предыдущий месяц по категории айти
 const   pikabu_url = "https://pikabu.ru/tag/IT?d=4065&D=4093";
 const   pikabu_url_incr = "https://pikabu.ru/tag/IT?d=4092&D=4093";
-// setInterval(function() {
+setInterval(function() {
     var total_tags = [];
     var total_tags_short = [];
 	// HABR request
@@ -157,7 +157,7 @@ const   pikabu_url_incr = "https://pikabu.ru/tag/IT?d=4092&D=4093";
 
 
 		
-// }, 30*10000); // 30 * 1000 milsec
+}, 30*10000); // 30 * 1000 milsec
 	function sendToServer(total_tags){
 		console.log(new Date(),":send data to the server1");
 		request.post({
