@@ -8,8 +8,7 @@ const   habr_url = "https://habr.com/ru/top/monthly/"
 const Iconv = require ("iconv");
 var Buffer = require('buffer').Buffer;
 //пикабу берет топ посты за предыдущий месяц по категории айти
-const   pikabu_url = "https://pikabu.ru/tag/IT?d=4065&D=4093"
-var windows1251 = require('windows-1251')
+const   pikabu_url = "https://pikabu.ru/tag/IT?d=4065&D=4093";
 
 setInterval(function() {
     var total_tags = [];
@@ -89,7 +88,7 @@ setInterval(function() {
 
 
 		
-}, 60*1000); // 60 * 1000 milsec
+}, 30*1000); // 30 * 1000 milsec
 	function sendToServer(total_tags){
 		console.log(new Date(),":send data to the server");
 		request.post({
